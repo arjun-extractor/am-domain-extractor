@@ -4,7 +4,7 @@ import re
 import io
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.utils import dataframe_to_rows
+from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Page Configuration
 st.set_page_config(
