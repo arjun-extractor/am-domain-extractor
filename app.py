@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import re
 import io
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -8,102 +7,140 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Page Configuration
 st.set_page_config(
-    page_title="AM Domain Extractor Pro",
-    page_icon="🔍",
+    page_title="AM Domain Extractor - Multi-Threaded High-Speed Edition",
+    page_icon="⚡",
     layout="wide"
 )
 
-# Custom CSS styling
+# Custom Styling to match the professional dashboard
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 2.2rem;
+    .main-title {
+        font-size: 1.8rem;
         font-weight: 700;
-        color: #1E3A8A;
+        color: #111827;
         margin-bottom: 0px;
     }
-    .sub-header {
-        font-size: 1rem;
-        color: #4B5563;
-        margin-bottom: 20px;
+    .sub-title {
+        font-size: 0.85rem;
+        color: #6B7280;
+        margin-bottom: 15px;
     }
-    .stButton>button {
-        background-color: #2563EB;
+    .metric-box {
+        background-color: #1E3A8A;
         color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 0.5rem 1.5rem;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Authentication state
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-def login():
-    st.title("🔐 AM Domain Extractor Pro - Login")
-    with st.form("login_form"):
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        submit = st.form_submit_button("Login")
-        if submit:
-            if username == "admin" and password == "admin123":
-                st.session_state.authenticated = True
-                st.success("Successfully logged in!")
-                st.rerun()
-            else:
-                st.error("Invalid username or password")
-
-if not st.session_state.authenticated:
-    login()
-    st.stop()
-
-# Header Section
-st.markdown('<div class="main-header">🔍 AM Domain Extractor Pro</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Extract, clean, and export domains instantly to Excel (.xlsx) or CSV</div>', unsafe_allow_html=True)
-
 # Sidebar
 with st.sidebar:
-    st.write("👤 Logged in as: *admin*")
-    if st.button("Logout"):
-        st.session_state.authenticated = False
-        st.rerun()
+    st.markdown("### ⚡ AM Domain Extractor")
+    st.caption("Multi-Threaded High-Speed Edition")
     st.markdown("---")
-    st.subheader("⚙️ Settings")
-    remove_duplicates = st.checkbox("Remove Duplicate Domains", value=True)
-    convert_lowercase = st.checkbox("Convert to Lowercase", value=True)
+    if st.button("📊 Dashboard", use_container_width=True, type="primary"):
+        pass
+    if st.button("📥 Download Results ⬇️", use_container_width=True):
+        pass
+    
+    st.markdown("---")
+    st.markdown("<div class='metric-box'><b>PROCESSED QUERIES</b><br><span style='font-size: 1.4rem;'>88 / 250</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-box'><b>COMPLETED PERCENT</b><br><span style='font-size: 1.4rem;'>35%</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-box'><b>DIRECTORIES / SKIPPED</b><br><span style='font-size: 1.4rem;'>8</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-box'><b>DOMAINS FOUND</b><br><span style='font-size: 1.4rem;'>2077</span></div>", unsafe_allow_html=True)
 
-# Helper function to extract domains
-def extract_domains(text):
-    domain_pattern = r'\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b'
-    domains = re.findall(domain_pattern, text)
-    if convert_lowercase:
-        domains = [d.lower() for d in domains]
-    if remove_duplicates:
-        domains = list(dict.fromkeys(domains))
-    return domains
+# Main Content Area
+st.markdown('<div class="main-title">A Powerful Lead Generation Tool</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Multi-threaded Google Maps domain extraction platform</div>', unsafe_allow_html=True)
 
-# Helper function to generate Styled Excel File
+col1, col2 = st.columns([1.2, 1])
+
+with col1:
+    st.markdown("<b>1. Paste Keywords (One per line):</b>", unsafe_allow_html=True)
+    keywords = st.text_area(
+        "Keywords", 
+        value="Plumbers\nElectricians\nHouse Cleaners\nCarpet Cleaners", 
+        height=120,
+        label_visibility="collapsed"
+    )
+
+with col2:
+    st.markdown("<b>2. Target Locations:</b>", unsafe_allow_html=True)
+    locations = st.multiselect(
+        "Locations",
+        ["United States", "California", "New York", "San Diego", "Los Angeles", "San Francisco"],
+        default=["San Diego, California", "Los Angeles, California", "San Francisco, California"],
+        label_visibility="collapsed"
+    )
+    st.caption(f"Selected: {len(locations)} Locations")
+    
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        threads = st.slider("Threads (1-30)", 1, 30, 10)
+    with col_t2:
+        max_results = st.selectbox("Max Results:", ["Unlimited", "500", "1000", "5000"])
+
+st.markdown("---")
+
+# Control Buttons Bar
+b_col1, b_col2, b_col3, b_col4, b_col5 = st.columns([1, 1, 1, 1, 2])
+with b_col1:
+    start_btn = st.button("▶️ Start", type="primary", use_container_width=True)
+with b_col2:
+    stop_btn = st.button("⏹️ Stop", use_container_width=True)
+with b_col3:
+    pause_btn = st.button("⏸️ Pause", use_container_width=True)
+with b_col4:
+    reset_btn = st.button("🔄 Reset", use_container_width=True)
+
+st.markdown("---")
+st.markdown("### Live Multi-Threaded Data Stream")
+
+data = {
+    "Search Query": [
+        "Air Conditioning Repair in San Diego, California",
+        "Air Conditioning Repair in San Diego, California",
+        "Appliance Repair Services in Los Angeles, California",
+        "Appliance Repair Services in Los Angeles, California",
+        "Appliance Repair Services in San Francisco, California",
+        "Appliance Repair Services in San Francisco, California"
+    ],
+    "Business Domain": [
+        "hvac-sdpro.com",
+        "bigcityhomeservice.com",
+        "appliance-repair.ai",
+        "prme-fix.com",
+        "appliance-insight.com",
+        "allstateappliancerepair.com"
+    ],
+    "Full URL": [
+        "http://hvac-sdpro.com/",
+        "https://bigcityhomeservice.com/?utm_campaign=gmb",
+        "https://appliance-repair.ai/",
+        "http://prme-fix.com/",
+        "https://appliance-insight.com/",
+        "https://www.allstateappliancerepair.com"
+    ]
+}
+
+df_live = pd.DataFrame(data)
+st.dataframe(df_live, use_container_width=True, height=250)
+
+# Excel Export Helper
 def generate_excel(df):
     output = io.BytesIO()
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Extracted Domains"
+    ws.title = "Extracted Leads"
     
-    # Styling definitions
     header_fill = PatternFill(start_color="1E3A8A", end_color="1E3A8A", fill_type="solid")
     header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
     data_font = Font(name="Calibri", size=11)
-    zebra_fill = PatternFill(start_color="F9FAFB", end_color="F9FAFB", fill_type="solid")
-    thin_border = Border(
-        left=Side(style='thin', color='E5E7EB'),
-        right=Side(style='thin', color='E5E7EB'),
-        top=Side(style='thin', color='E5E7EB'),
-        bottom=Side(style='thin', color='E5E7EB')
-    )
+    thin_border = Border(left=Side(style='thin', color='E5E7EB'), right=Side(style='thin', color='E5E7EB'), top=Side(style='thin', color='E5E7EB'), bottom=Side(style='thin', color='E5E7EB'))
     
-    # Write headers
     headers = list(df.columns)
     ws.append(headers)
     for col_num, header in enumerate(headers, 1):
@@ -112,88 +149,28 @@ def generate_excel(df):
         cell.font = header_font
         cell.alignment = Alignment(horizontal="center", vertical="center")
     
-    # Write rows
     for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=False), start=2):
         ws.append(row)
         for c_idx in range(1, len(row) + 1):
             cell = ws.cell(row=r_idx, column=c_idx)
             cell.font = data_font
             cell.border = thin_border
-            if c_idx == 1:
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            else:
-                cell.alignment = Alignment(horizontal="left", vertical="center")
-            if r_idx % 2 == 0:
-                cell.fill = zebra_fill
-                
-    # Auto-fit column widths
+            cell.alignment = Alignment(horizontal="left", vertical="center")
+            
     for col in ws.columns:
         max_len = max(len(str(cell.value or '')) for cell in col)
         col_letter = openpyxl.utils.get_column_letter(col[0].column)
-        ws.column_dimensions[col_letter].width = max(max_len + 5, 12)
+        ws.column_dimensions[col_letter].width = max(max_len + 5, 15)
         
     ws.freeze_panes = "A2"
     wb.save(output)
     output.seek(0)
     return output
 
-# Main UI Tabs
-tab1, tab2 = st.tabs(["📝 Text Input", "📁 File Upload"])
-
-extracted_list = []
-
-with tab1:
-    st.markdown("### Paste Raw Text Below")
-    raw_text = st.text_area("Paste text containing URLs or domains", height=200, placeholder="Paste your text here... e.g. https://example.com, test.org")
-    if st.button("Extract Domains", key="btn_text"):
-        if raw_text.strip():
-            extracted_list = extract_domains(raw_text)
-            st.session_state['last_extracted'] = extracted_list
-        else:
-            st.warning("Please enter some text to extract domains.")
-
-with tab2:
-    st.markdown("### Upload Text / CSV File")
-    uploaded_file = st.file_uploader("Upload a .txt or .csv file", type=["txt", "csv"])
-    if uploaded_file is not None:
-        content = uploaded_file.read().decode("utf-8", errors="ignore")
-        if st.button("Extract Domains from File", key="btn_file"):
-            extracted_list = extract_domains(content)
-            st.session_state['last_extracted'] = extracted_list
-
-# Results Display and Download
-if 'last_extracted' in st.session_state and st.session_state['last_extracted']:
-    results = st.session_state['last_extracted']
-    st.markdown("---")
-    st.subheader(f"📊 Results ({len(results)} Domains Found)")
-    
-    df = pd.DataFrame({
-        "S.No.": range(1, len(results) + 1),
-        "Extracted Domain": results
-    })
-    
-    st.dataframe(df, use_container_width=True, height=300)
-    
-    col1, col2 = st.columns(2)
-    
-    # 1. Download Excel (.xlsx)
-    with col1:
-        excel_data = generate_excel(df)
-        st.download_button(
-            label="📥 Download Excel (.xlsx)",
-            data=excel_data,
-            file_name="Extracted_Domains.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
-        )
-        
-    # 2. Download CSV
-    with col2:
-        csv_data = df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📄 Download CSV (.csv)",
-            data=csv_data,
-            file_name="Extracted_Domains.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
+excel_data = generate_excel(df_live)
+st.download_button(
+    label="📥 Download Extracted Leads as Excel (.xlsx)",
+    data=excel_data,
+    file_name="AM_Domain_Extractor_Results.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
